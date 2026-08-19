@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  quickbite-user:
+    build: ./user-service
+    container_name: quickbite-user
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://quickbite-db:5432/quickbite_user_db
+      - SPRING_DATASOURCE_USERNAME=quickbite_service
+      - SPRING_DATASOURCE_PASSWORD=secret
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+    networks:
+      - quickbite-net
+
+networks:
+  quickbite-net:
+    external: true
+    name: quickbite-database_quickbite-net

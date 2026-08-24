@@ -1,0 +1,55 @@
+services:
+  core-db:
+    image: postgres:15-alpine
+    container_name: core-db
+    environment:
+      POSTGRES_DB: banking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kimquan1
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - banking-network
+    restart: unless-stopped
+
+  account-service:
+    build: ./bank-service
+    container_name: account-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://core-db:5432/banking_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: kimquan1
+    ports:
+      - "8080:8080"
+    depends_on:
+      - core-db
+    networks:
+      - banking-network
+
+  transaction-service:
+    build: ./transaction-service
+    container_name: transaction-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - account-service
+    networks:
+      - banking-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "80:8080"
+    depends_on:
+      - account-service
+      - transaction-service
+    networks:
+      - banking-network
+
+volumes:
+  pg-data:
+
+networks:
+  banking-network:
+    driver: bridge

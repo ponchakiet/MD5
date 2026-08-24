@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # 1. Dịch vụ User
+  quickbite-user:
+    image: quickbite-user-service:latest
+    ports:
+      - "8081:8080" # Ánh xạ port 8081 trên máy host vào port 8080 của container
+    environment:
+      # LƯU Ý: Thay 'db' bằng tên container database thực tế của bạn ở Session 4
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/user_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    networks:
+      - quickbite-net
+
+  # 2. Dịch vụ Restaurant
+  quickbite-restaurant:
+    image: quickbite-restaurant-service:latest
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/restaurant_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    networks:
+      - quickbite-net
+
+  # 3. Dịch vụ Order
+  quickbite-order:
+    image: quickbite-order-service:latest
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/order_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    networks:
+      - quickbite-net
+
+  # 4. Dịch vụ Notification
+  quickbite-notification:
+    image: quickbite-notification-service:latest
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    networks:
+      - quickbite-net
+
+# ĐIỂM MẤU CHỐT CỦA BÀI TẬP: Khai báo sử dụng mạng ngoài
+networks:
+  quickbite-net:
+    external: true

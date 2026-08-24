@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # ------------------------------------------------
+  # Service 1: Database PostgreSQL theo yêu cầu
+  # ------------------------------------------------
+  core-db:
+    image: postgres:15-alpine
+    container_name: core-db
+    environment:
+      POSTGRES_DB: banking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kimquan1
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # ------------------------------------------------
+  # Service 2: Ứng dụng Spring Boot
+  # ------------------------------------------------
+  account-service:
+    build: .
+    container_name: account-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://core-db:5432/banking_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: kimquan1
+    ports:
+      - "8080:8080"
+    depends_on:
+      - core-db

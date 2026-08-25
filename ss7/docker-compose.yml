@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  github-runner:
+    image: myoung34/github-runner:latest
+    container_name: quickbite-runner
+    environment:
+      REPO_URL: "https://github.com/daoquan2k3/md5_ss7"
+      RUNNER_NAME: "quickbite-server"
+      RUNNER_TOKEN: "BZK37Q4H5J53B566HP5SP73KN4KM4"
+      RUNNER_LABELS: "quickbite-runner"
+      RUNNER_WORKDIR: "/tmp/runner/work"
+    volumes:
+      # 1. Mount socket của Docker host vào container để runner có thể chạy các lệnh Docker (Docker-out-of-Docker)
+      - /var/run/docker.sock:/var/run/docker.sock
+      # 2. Cung cấp nơi lưu trữ tạm cho thư mục làm việc trong quá trình build
+      - /tmp/runner:/tmp/runner
+    restart: always

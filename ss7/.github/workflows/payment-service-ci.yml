@@ -1,0 +1,49 @@
+name: Payment Service CI
+on: [push]
+
+jobs:
+  # GIAI ĐOẠN 1: CHẠY UNIT TEST
+  test_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21' # Đề bài yêu cầu Java 21
+          distribution: 'temurin'
+
+      - name: Run Unit Tests
+        run: |
+          cd payment-service
+          chmod +x ./gradlew
+          ./gradlew test
+
+  # GIAI ĐOẠN 2: BUILD FILE JAR
+  build_job:
+    needs: test_job
+    runs-on: ubuntu-latest
+    steps:
+      # Bắt buộc phải checkout và setup lại Java vì Job Isolation (máy ảo mới hoàn toàn)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build JAR
+        run: |
+          cd payment-service
+          chmod +x ./gradlew
+          ./gradlew bootJar
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: payment-service-artifact
+          path: payment-service/build/libs/*.jar

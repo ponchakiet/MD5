@@ -1,0 +1,9 @@
+1. Đăng nhập vào GitHub Container Registry (GHCR) bằng PAT:
+docker login ghcr.io -u daoquan2k3
+(Hệ thống hỏi Password thì dán mã Personal Access Token - PAT vào)
+
+2. Build image và gắn tag đúng cấu trúc:
+docker build -t ghcr.io/daoquan2k3/cart-service:1.0.0 .
+
+3. Push image lên GHCR:
+docker push ghcr.io/daoquan2k3/cart-service:1.0.0

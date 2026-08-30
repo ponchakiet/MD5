@@ -1,0 +1,34 @@
+name: Pull and Verify Image from GHCR
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  pull-verify:
+    runs-on: [self-hosted, quickbite-runner]
+
+    # Cấu hình quyền để GITHUB_TOKEN có thể đọc packages từ GHCR
+    permissions:
+      packages: read
+      contents: read
+
+    steps:
+      - name: Đăng nhập vào GHCR bằng GITHUB_TOKEN
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Kéo Image và chạy Verify Container
+        run: |
+          # Xử lý đưa tên repo về chữ thường để tránh lỗi
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/cart-service
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          
+          echo "Bắt đầu pull image: $IMAGE_ID:1.0.0"
+          docker pull $IMAGE_ID:1.0.0
+          
+          echo "Khởi chạy container verify..."
+          docker run -d $IMAGE_ID:1.0.0

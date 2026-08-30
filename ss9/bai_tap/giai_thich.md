@@ -1,0 +1,3 @@
+Thiếu định nghĩa môi trường chạy (Docker Image): GitLab Runner mặc định là một môi trường trống và không được cài đặt sẵn Java Development Kit (JDK) hay Gradle. Vì ứng dụng Spring Boot yêu cầu môi trường Java để biên dịch, việc không khai báo image sẽ khiến hệ thống không thể thực thi script ./gradlew, dẫn đến lỗi không tìm thấy lệnh.
+
+Sai cú pháp YAML khi khai báo mảng (Array): Từ khóa stages trong GitLab CI yêu cầu giá trị truyền vào phải là một danh sách (list/array). Trong chuẩn cú pháp YAML, các phần tử của một danh sách phải được bắt đầu bằng dấu gạch ngang (-). Mã cũ viết trực tiếp build_app ngay dưới stages: mà không có dấu - là sai cú pháp.

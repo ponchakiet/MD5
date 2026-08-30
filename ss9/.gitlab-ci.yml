@@ -1,0 +1,85 @@
+#image: eclipse-temurin:17-jdk-alpine
+#
+#stages:
+#  - build_app
+#
+#build_job:
+#  stage: build_app
+#  script:
+#    - cd test-service
+#    - chmod +x gradlew
+#    - ./gradlew clean build -x test
+
+#ex3
+# Sử dụng image Gradle có tích hợp sẵn JDK 17
+#image: gradle:7.6-jdk17
+#
+## Định nghĩa các giai đoạn tuần tự
+#stages:
+#  - test
+#  - build
+#
+## Giai đoạn Test
+#test_job:
+#  stage: test
+#  services:
+#    - name: postgres:14-alpine
+#      alias: postgres
+#  variables:
+#    POSTGRES_DB: test_db
+#    POSTGRES_USER: postgres
+#    POSTGRES_PASSWORD: kimquan1
+#    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test_db
+#    SPRING_DATASOURCE_USERNAME: postgres
+#    SPRING_DATASOURCE_PASSWORD: kimquan1
+#  script:
+#    - cd test-service
+#    - chmod +x gradlew
+#    - ./gradlew test
+#
+## Giai đoạn Build
+#build_job:
+#  stage: build
+#  script:
+#    - cd test-service
+#    - chmod +x gradlew
+#    - ./gradlew build -x test
+#  # Cấu hình lưu trữ kết quả build
+#  artifacts:
+#    paths:
+#      - test-service/build/libs/*.jar
+#    expire_in: 1 day
+
+
+#ex4
+stages:
+  - build
+  - dockerize
+
+build_job:
+  stage: build
+  image: gradle:8-jdk17
+  script:
+    - cd test-service
+    - chmod +x gradlew
+    - ./gradlew build -x test
+  artifacts:
+    paths:
+      - test-service/build/libs/*.jar
+    expire_in: 1 day
+
+# Job Dockerize mới cho Bài 4
+dockerize_job:
+  stage: dockerize
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  dependencies:
+    - build_job
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t $DOCKER_USERNAME/my-repo:latest .
+    - docker push $DOCKER_USERNAME/my-repo:latest

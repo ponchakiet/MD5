@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  github-runner:
+    image: myoung34/github-runner:latest
+    container_name: quickbite-runner
+    environment:
+      REPO_URL: "https://github.com/daoquan2k3/md5-ss8"
+      RUNNER_NAME: "quickbite-server"
+      RUNNER_TOKEN: "BZK37Q34D7MB54B6XRBVX6LKN4Q7A"
+      RUNNER_LABELS: "quickbite-runner"
+      RUNNER_WORKDIR: "/tmp/runner/work"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/runner:/tmp/runner
+    restart: always

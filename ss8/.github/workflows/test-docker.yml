@@ -1,0 +1,9 @@
+name: Test Docker DooD
+on: [push]
+
+jobs:
+  test_docker:
+    runs-on: [self-hosted, quickbite-runner]
+    steps:
+      - name: Kiem tra Docker Daemon
+        run: docker info

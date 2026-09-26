@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Khai báo Custom Appender -->
+    <appender name="DISCORD" class="com.storex.alert.DiscordAppender">
+        <!-- Thay webhook URL thật của bạn vào đây -->
+        <webhookUrl>https://discord.com/api/webhooks/1535910366389993554/HDYtO9yNAU3MCg1mEHJ51d47bG0sWDaXpaKRTG-7XsCQNsZctSBloFr9Jjb3CzoQnnwJ</webhookUrl>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="DISCORD" />
+    </root>
+</configuration>
